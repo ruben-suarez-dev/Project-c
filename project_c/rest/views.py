@@ -46,3 +46,61 @@ def filter_inhabitant_house(request, id):
             serializer_all = InhabitantSerializer(queryset, many=True)
             return Response(serializer_all.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+# Api para crear Condominios
+@api_view(['POST'])
+def add_condominium(request):
+    serializer = CondominiumSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Api para borra Condominios
+@api_view(['DELETE'])
+def delete_condominium(request, pk):
+    tmp_condominium = Condominium.objects.get(id=pk)
+    if tmp_condominium:
+        tmp_condominium.delete()
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Api para crear casas
+@api_view(['POST'])
+def add_house(request):
+    serializer = HouseSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Api para borra Casas
+@api_view(['DELETE'])
+def delete_house(request, pk):
+    tmp_house = House.objects.get(id=pk)
+    if tmp_house:
+        tmp_house.delete()
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Api para crear Habitantes de una casa
+@api_view(['POST'])
+def add_inhabitant(request):
+    serializer = InhabitantSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        print('Los datos del habitante son: ', serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# Api para borra habitantes de una casa
+@api_view(['DELETE'])
+def delete_inhabitant(request, pk):
+    tmp_inhabitant = Inhabitants.objects.get(id=pk)
+    if tmp_inhabitant:
+        tmp_inhabitant.delete()
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
