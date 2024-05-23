@@ -10,8 +10,9 @@ from http import HTTPStatus as status
 from .models import Condominium, House, Inhabitants
 from .serializers import CondominiumSerializer, HouseSerializer, InhabitantSerializer
 
-# Create your views here.
-
+returnStructure = {
+    "code": "200"
+}
 
 class GetCondominium(
     ListModelMixin,
@@ -61,23 +62,28 @@ def add_condominium(request):
     serializer = CondominiumSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure["data"] =  serializer.data
+        return Response(returnStructure)
+    returnStructure["code"] = "400"
+    return Response(returnStructure)
 
 
 # Api para Actualizar Condominios
-@api_view(['PUT'])
+@api_view(['PUT', 'POST'])
 def edit_condominium(request, pk):
     try:
         tmp_condominium = Condominium.objects.get(id=pk)
     except Condominium.DoesNotExist:
-        return Response(status=status.HTTP_400_NOT_FOUND)
+        returnStructure["code"] = "401"
+        return Response(returnStructure)
         
     serializer = CondominiumSerializer(tmp_condominium, data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_EDITED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure["data"] =  serializer.data
+        return Response(returnStructure)
+    returnStructure["code"] = "400"
+    return Response(returnStructure)
 
 # Api para borra Condominios
 @api_view(['DELETE'])
