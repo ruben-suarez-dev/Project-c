@@ -11,7 +11,7 @@ from .models import Condominium, House, Inhabitants
 from .serializers import CondominiumSerializer, HouseSerializer, InhabitantSerializer
 
 returnStructure = {
-    "code": "200"
+    'code': '200'
 }
 
 class GetCondominium(
@@ -62,9 +62,9 @@ def add_condominium(request):
     serializer = CondominiumSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        returnStructure["data"] =  serializer.data
+        returnStructure['data'] =  serializer.data
         return Response(returnStructure)
-    returnStructure["code"] = "400"
+    returnStructure['code'] = '400'
     return Response(returnStructure)
 
 
@@ -74,25 +74,29 @@ def edit_condominium(request, pk):
     try:
         tmp_condominium = Condominium.objects.get(id=pk)
     except Condominium.DoesNotExist:
-        returnStructure["code"] = "401"
+        returnStructure['code'] = '401'
         return Response(returnStructure)
         
     serializer = CondominiumSerializer(tmp_condominium, data=request.data)
     if serializer.is_valid():
         serializer.save()
-        returnStructure["data"] =  serializer.data
+        returnStructure['data'] =  serializer.data
+        returnStructure['code'] =  '201'
         return Response(returnStructure)
-    returnStructure["code"] = "400"
+    returnStructure['code'] = '400'
     return Response(returnStructure)
 
 # Api para borra Condominios
-@api_view(['DELETE'])
+@api_view(['DELETE', 'POST'])
 def delete_condominium(request, pk):
     tmp_condominium = Condominium.objects.get(id=pk)
     if tmp_condominium:
         tmp_condominium.delete()
-        return Response(status=status.HTTP_200_DELETED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['code'] = '210'
+        returnStructure['data'] = pk
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para crear casas
 @api_view(['POST'])
@@ -100,8 +104,11 @@ def add_house(request):
     serializer = HouseSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['data'] =  serializer.data
+        returnStructure['type'] = 'house'
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para Actualizar casas
 @api_view(['PUT'])
