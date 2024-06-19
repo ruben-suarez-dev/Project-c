@@ -111,27 +111,34 @@ def add_house(request):
     return Response(returnStructure)
 
 # Api para Actualizar casas
-@api_view(['PUT'])
+@api_view(['PUT', 'POST'])
 def edit_house(request, pk):
     try:
         tmp_house = House.objects.get(id=pk)
     except House.DoesNotExist:
-        return Response(status=status.HTTP_400_NOT_FOUND)
-        
+        returnStructure['code'] = '401'
+        return Response(returnStructure)
     serializer = HouseSerializer(tmp_house, data=request.data)
+    print('Los datos son: ', serializer)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_EDITED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['data'] =  serializer.data
+        returnStructure['code'] =  '201'
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para borra Casas
-@api_view(['DELETE'])
+@api_view(['DELETE', 'POST'])
 def delete_house(request, pk):
     tmp_house = House.objects.get(id=pk)
     if tmp_house:
         tmp_house.delete()
-        return Response(status=status.HTTP_200_DELETED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['code'] = '210'
+        returnStructure['data'] = pk
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para Actualizar habitantes
 @api_view(['PUT'])
