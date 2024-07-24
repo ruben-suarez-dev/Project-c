@@ -143,35 +143,48 @@ def delete_house(request, pk):
     return Response(returnStructure)
 
 # Api para Actualizar habitantes
-@api_view(['PUT'])
+@api_view(['PUT', 'POST'])
 def edit_inhabitant(request, pk):
+    returnStructure = {}
     try:
         tmp_inhabitant = Inhabitants.objects.get(id=pk)
     except Inhabitants.DoesNotExist:
-        return Response(status=status.HTTP_400_NOT_FOUND)
+        returnStructure['code'] = '401'
+        return Response(returnStructure)
         
     serializer = InhabitantSerializer(tmp_inhabitant, data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_EDITED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['data'] =  serializer.data
+        returnStructure['code'] =  '201'
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para crear Habitantes de una casa
 @api_view(['POST'])
 def add_inhabitant(request):
+    returnStructure = {}
     serializer = InhabitantSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['data'] =  serializer.data
+        returnStructure['code'] =  '200'
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
 
 # Api para borra habitantes de una casa
-@api_view(['DELETE'])
+@api_view(['DELETE', 'POST'])
 def delete_inhabitant(request, pk):
+    returnStructure = {}
     tmp_inhabitant = Inhabitants.objects.get(id=pk)
     if tmp_inhabitant:
         tmp_inhabitant.delete()
-        return Response(status=status.HTTP_200_OK)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        returnStructure['code'] = '210'
+        returnStructure['data'] = pk
+        return Response(returnStructure)
+    returnStructure['code'] = '400'
+    return Response(returnStructure)
     
 

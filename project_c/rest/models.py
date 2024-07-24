@@ -16,7 +16,7 @@ class Condominium(models.Model):
         return self.name
     
 class House(models.Model):
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=100)
     condominium = models.ForeignKey(Condominium, on_delete=models.CASCADE)
     description = models.CharField(max_length=100)
 
@@ -25,10 +25,10 @@ class House(models.Model):
 
     
 class Inhabitants (models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
-    age = models.IntegerField()
-    phone = models.IntegerField()
+    age = models.IntegerField(blank=True, null=True)
+    phone = models.CharField(max_length=12)
     areTenant = models.BooleanField()
     house = models.ForeignKey(House, on_delete=models.CASCADE)
 
